@@ -1,0 +1,134 @@
+.eth-prehled {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.eth-prehled__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #0078d4;
+  color: #1a1a1a;
+}
+
+.eth-prehled__table-wrap {
+  overflow-x: auto;
+}
+
+.eth-prehled__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.eth-prehled__table th,
+.eth-prehled__table td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.eth-prehled__table thead th {
+  background-color: #0078d4;
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.eth-prehled__table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.eth-prehled__table tbody tr:hover {
+  background-color: #edf4fc;
+}
+
+/* Tlačítko jméno pracovníka */
+.eth-prehled__name-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #0078d4;
+  font-weight: bold;
+  font-size: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: left;
+}
+
+.eth-prehled__name-btn:hover {
+  color: #004578;
+}
+
+/* Uplynulý čas – monospace pro zarovnání číslic */
+.eth-prehled__time {
+  font-family: "Courier New", monospace;
+  font-weight: 600;
+}
+
+/* Barevné formátování buněk */
+.eth-prehled__cell--prostoj {
+  background-color: #ffc000 !important;
+  font-weight: 600;
+}
+
+.eth-prehled__cell--stav-a {
+  background-color: #ff0000 !important;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* ── Modální okno ── */
+.eth-modal__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.eth-modal__content {
+  background: #fff;
+  width: 90%;
+  max-width: 1000px;
+  max-height: 80vh;
+  padding: 1.5rem;
+  border-radius: 8px;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.eth-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 1.75rem;
+  font-weight: bold;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  line-height: 1;
+}
+
+.eth-modal__close:hover {
+  color: #000;
+}
+
+.eth-modal__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.eth-modal__table-wrap {
+  overflow-x: auto;
+}

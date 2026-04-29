@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
+import * as XLSX from "xlsx";
 import "./ExcelLoader.css";
 
-export default function ExcelLoader() {
+export default function ExcelLoader({ onDataLoaded }) {
   const [loadedFile, setLoadedFile] = useState(null);
   const [loadTime, setLoadTime] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -9,44 +10,42 @@ export default function ExcelLoader() {
 
   const processFile = (file) => {
     if (!file) return;
-
-    const validExtensions = [".xlsx", ".xls", ".csv"];
-    const hasValidExt = validExtensions.some((ext) =>
-      file.name.toLowerCase().endsWith(ext),
-    );
-
-    if (!hasValidExt) {
+    const validExt = [".xlsx", ".xls", ".csv"];
+    if (!validExt.some((e) => file.name.toLowerCase().endsWith(e))) {
       alert("Nepodporovaný formát. Prosím vyberte .xlsx, .xls nebo .csv.");
       return;
     }
 
     const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array", cellDates: true });
+      const jsonData = XLSX.utils.sheet_to_json(
+        workbook.Sheets[workbook.SheetNames[0]],
+        { defval: "" },
+      );
 
-    reader.onload = () => {
       const now = new Date();
-      setLoadedFile({
-        name: file.name,
-        size: (file.size / 1024).toFixed(1),
-      });
+      setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
       setLoadTime(
         now.toLocaleString("cs-CZ", {
-          // day: "2-digit",
-          // month: "2-digit",
-          // year: "numeric",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
         }),
       );
-    };
 
+      if (onDataLoaded) onDataLoaded(jsonData);
+    };
     reader.readAsArrayBuffer(file);
-    e.target.value = "";
   };
 
   const handleFileChange = (e) => {
     processFile(e.target.files[0]);
-    e.target.value = ""; // reset pro opakované načtení stejného souboru
+    e.target.value = "";
   };
 
   const handleDrop = (e) => {
@@ -58,12 +57,12 @@ export default function ExcelLoader() {
   const handleReset = () => {
     setLoadedFile(null);
     setLoadTime(null);
+    if (onDataLoaded) onDataLoaded(null);
   };
 
   return (
     <section className="excel-loader">
-      <h2 className="excel-loader__title"></h2>
-
+      <h2 className="excel-loader__title">Načíst Excel soubor</h2>
       <div
         className={`excel-loader__dropzone ${isDragging ? "excel-loader__dropzone--active" : ""}`}
         onClick={() => inputRef.current.click()}
@@ -76,7 +75,6 @@ export default function ExcelLoader() {
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" && inputRef.current.click()}
-        aria-label="Oblast pro nahrání souboru"
       >
         <svg
           className="excel-loader__icon"
@@ -110,6 +108,18 @@ export default function ExcelLoader() {
 
       {loadedFile && loadTime && (
         <div className="excel-loader__result" role="status" aria-live="polite">
+          <div className="excel-loader__result-row">
+            <span className="excel-loader__result-label">Soubor</span>
+            <span className="excel-loader__result-value">
+              {loadedFile.name}
+            </span>
+          </div>
+          <div className="excel-loader__result-row">
+            <span className="excel-loader__result-label">Velikost</span>
+            <span className="excel-loader__result-value">
+              {loadedFile.size} KB
+            </span>
+          </div>
           <div className="excel-loader__result-row">
             <span className="excel-loader__result-label">Čas načtení</span>
             <span className="excel-loader__result-value excel-loader__result-value--accent">
