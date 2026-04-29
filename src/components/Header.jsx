@@ -1,8 +1,8 @@
 export default function Header() {
   return (
     <header>
-      <h1>ETH přehled</h1>
+      <h1 align="left"> ETH přehled</h1>
       <p>Aplikace pro zobrazení přehledu na terminálech ETH</p>
     </header>
-  )
+  );
 }

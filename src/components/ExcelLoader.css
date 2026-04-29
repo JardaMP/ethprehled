@@ -1,0 +1,125 @@
+.excel-loader {
+  max-width: 480px;
+  margin: 0.5rem auto;
+  font-family: inherit;
+}
+
+.excel-loader__title {
+  font-size: 0.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #1a1a1a;
+}
+
+.excel-loader__dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 1rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  outline: none;
+}
+
+.excel-loader__dropzone:hover,
+.excel-loader__dropzone:focus-visible {
+  border-color: #217346;
+  background: #f0f8f3;
+}
+
+.excel-loader__dropzone--active {
+  border-color: #217346;
+  background: #e8f5ec;
+}
+
+.excel-loader__icon {
+  width: 40px;
+  height: 40px;
+  color: #217346;
+  margin-bottom: 0.25rem;
+}
+
+.excel-loader__dropzone-text {
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.excel-loader__dropzone-text span {
+  color: #217346;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.excel-loader__dropzone-hint {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.excel-loader__input {
+  display: none;
+}
+
+/* Výsledek načtení */
+.excel-loader__result {
+  margin-top: 1.25rem;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.excel-loader__result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid #eee;
+  gap: 1rem;
+}
+
+.excel-loader__result-row:last-of-type {
+  border-bottom: none;
+}
+
+.excel-loader__result-label {
+  font-size: 0.85rem;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.excel-loader__result-value {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  text-align: right;
+  word-break: break-all;
+}
+
+.excel-loader__result-value--accent {
+  color: #217346;
+  font-weight: 700;
+}
+
+.excel-loader__reset {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: #217346;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.excel-loader__reset:hover {
+  background: #185c38;
+}
