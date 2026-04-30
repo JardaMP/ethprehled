@@ -29,12 +29,12 @@ export default function ExcelLoader({ onDataLoaded }) {
       setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
       setLoadTime(
         now.toLocaleString("cs-CZ", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
+          // day: "2-digit",
+          // month: "2-digit",
+          // year: "numeric",
           hour: "2-digit",
           minute: "2-digit",
-          second: "2-digit",
+          // second: "2-digit",
         }),
       );
 
@@ -62,7 +62,6 @@ export default function ExcelLoader({ onDataLoaded }) {
 
   return (
     <section className="excel-loader">
-      <h2 className="excel-loader__title">Načíst Excel soubor</h2>
       <div
         className={`excel-loader__dropzone ${isDragging ? "excel-loader__dropzone--active" : ""}`}
         onClick={() => inputRef.current.click()}
@@ -108,29 +107,16 @@ export default function ExcelLoader({ onDataLoaded }) {
 
       {loadedFile && loadTime && (
         <div className="excel-loader__result" role="status" aria-live="polite">
-          <div className="excel-loader__result-row">
-            <span className="excel-loader__result-label">Soubor</span>
-            <span className="excel-loader__result-value">
-              {loadedFile.name}
-            </span>
-          </div>
-          <div className="excel-loader__result-row">
-            <span className="excel-loader__result-label">Velikost</span>
-            <span className="excel-loader__result-value">
-              {loadedFile.size} KB
-            </span>
-          </div>
+          
           <div className="excel-loader__result-row">
             <span className="excel-loader__result-label">Čas načtení</span>
             <span className="excel-loader__result-value excel-loader__result-value--accent">
               {loadTime}
             </span>
           </div>
-          <button className="excel-loader__reset" onClick={handleReset}>
-            Načíst jiný soubor
-          </button>
+          
         </div>
       )}
     </section>
   );
-}
+};

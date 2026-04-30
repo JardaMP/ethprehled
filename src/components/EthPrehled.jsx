@@ -31,15 +31,16 @@ export default function EthPrehled({ data }) {
 
   return (
     <section className="eth-prehled">
-      <h2 className="eth-prehled__title">Přehled pracovníků</h2>
+      <h2 className="eth-prehled__title">Aktuální přehled na terminálech ETH</h2>
 
       <div className="eth-prehled__table-wrap">
         <table className="eth-prehled__table">
           <thead>
             <tr>
               <th>Pracovník</th>
-              <th>Uplynulý čas</th>
+              <th>Poslední akce</th>
               <th>Poslední činnost</th>
+              <th>Uplynulý čas</th>
               <th>Zakázka</th>
               <th>Zákazník</th>
               <th>Stav</th>
@@ -63,11 +64,11 @@ export default function EthPrehled({ data }) {
                     </button>
                   </td>
                   <td className="eth-prehled__time">{formatHms(uplMs)}</td>
-                  <td>{row.posledniCinnost}</td>
+                  <td>{row.posledniAkce}</td>
                   <td
                     className={isProstojZ ? "eth-prehled__cell--prostoj" : ""}
                   >
-                    {row.zakazka}
+                    {row.posledniCinnost}
                   </td>
                   <td
                     className={isProstojN ? "eth-prehled__cell--prostoj" : ""}

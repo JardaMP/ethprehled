@@ -57,11 +57,11 @@ export function zpracujPrehled(rows) {
 
     return {
       prac,
-      refTime: refDate.getTime(), // uložíme referenční čas pro live výpočet
+      posledniAkce: r["Akce"] || "",
       posledniCinnost: d.posledniCinnost,
+      refTime: refDate.getTime(), // uložíme referenční čas pro live výpočet
       zakazka: r["Číslo zakázky"] || "PROSTOJ",
       zakaznik: r["Název"] || "PROSTOJ",
-      stav: r["Ukončeno"] || "",
     };
   });
 }
