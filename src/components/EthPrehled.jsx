@@ -10,20 +10,14 @@ export default function EthPrehled({ data, loadTime }) {
 
   // Zpracuj data při každém novém načtení souboru
   useEffect(() => {
-    const zpracovano = zpracujPrehled(data);
-    zpracovano.sort((a, b) => a.refTime - b.refTime); // nejstarší aktivita nahoře
-    setPrehled(zpracovano);
-  }, [data]);
-
-  useEffect(() => {
-    const now = new Date.now();
-    const zpracovano = zpracujPrehled(data).map((row) => ({
-      ...row,
-      ulpMs: now - row.refTime,
-      }));
-    zpracovano.sort((a, b) => a.ulpMs - b.ulpMs); // nejdříve aktualizované nahoře
-    setPrehled(zpracovano);
-  }, [data]);
+  const now = Date.now();
+  const zpracovano = zpracujPrehled(data).map((row) => ({
+    ...row,
+    uplMs: now - row.refTime,
+  }));
+  zpracovano.sort((a, b) => a.refTime - b.refTime); // nejstarší aktivita nahoře
+  setPrehled(zpracovano);
+}, [data]);
 
   const getDetailRows = (jmeno) =>
     data
