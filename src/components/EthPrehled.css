@@ -22,9 +22,7 @@
 
 
 .eth-prehled__load-time {
-  font-size: 0.85rem;
-  color: #555;
-  white-space: nowrap;
+  font-size: 1rem;
 }
 
 .eth-prehled__table-wrap {

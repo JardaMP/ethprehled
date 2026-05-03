@@ -24,30 +24,18 @@ export default function ExcelLoader({ onDataLoaded }) {
         workbook.Sheets[workbook.SheetNames[0]],
         { defval: "" },
       );
-      const now = new Date();
-  const loadTime = now.toLocaleString("cs-CZ", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-
-  setLoaded(true);
-  if (onDataLoaded) onDataLoaded(jsonData, loadTime, now.getTime()); // ← přidat now.getTime()
 
       const now = new Date();
+      const formattedTime = now.toLocaleString("cs-CZ", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+
       setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
-      setLoadTime(
-        now.toLocaleString("cs-CZ", {
-          // day: "2-digit",
-          // month: "2-digit",
-          // year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          // second: "2-digit",
-        }),
-      );
+      setLoadTime(formattedTime);
 
-      if (onDataLoaded) onDataLoaded(jsonData);
+      if (onDataLoaded) onDataLoaded(jsonData, formattedTime, now.getTime());
     };
     reader.readAsArrayBuffer(file);
   };
@@ -66,7 +54,7 @@ export default function ExcelLoader({ onDataLoaded }) {
   const handleReset = () => {
     setLoadedFile(null);
     setLoadTime(null);
-    if (onDataLoaded) onDataLoaded(null);
+    if (onDataLoaded) onDataLoaded(null, null, null);
   };
 
   return (
@@ -75,10 +63,7 @@ export default function ExcelLoader({ onDataLoaded }) {
         className={`excel-loader__dropzone ${isDragging ? "excel-loader__dropzone--active" : ""}`}
         onClick={() => inputRef.current.click()}
         onDrop={handleDrop}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragging(true);
-        }}
+        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         role="button"
         tabIndex={0}
@@ -114,18 +99,6 @@ export default function ExcelLoader({ onDataLoaded }) {
         />
       </div>
 
-      {loadedFile && loadTime && (
-        <div className="excel-loader__result" role="status" aria-live="polite">
-          
-          <div className="excel-loader__result-row">
-            <span className="excel-loader__result-label">Čas načtení</span>
-            <span className="excel-loader__result-value excel-loader__result-value--accent">
-              {loadTime}
-            </span>
-          </div>
-          
-        </div>
-      )}
     </section>
   );
-};
+}

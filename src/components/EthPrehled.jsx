@@ -27,13 +27,14 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
 
   return rows.map((r, i) => {
     let trvaniMs;
-    if (i === 0) {
-      // první řádek – trvání neznámé
-      trvaniMs = 0;
-    } else if (i === rows.length - 1) {
-      // poslední řádek – od záznamu do času načtení souboru
+    if (i === 0 && rows.length === 1) {
       trvaniMs = (loadTimestamp ?? Date.now()) - r["Datum pořízení"].getTime();
-    } else {
+    } else if (i === 0) {
+      // první řádek – trvání neznámé
+      trvaniMs = 0; 
+    } else if (i === rows.length - 1) {
+      trvaniMs = (loadTimestamp ?? Date.now()) - r["Datum pořízení"].getTime();
+      } else {
       // střední řádky – od předchozího záznamu k tomuto
       trvaniMs = r["Datum pořízení"].getTime() - rows[i - 1]["Datum pořízení"].getTime();
     }
@@ -45,11 +46,9 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
     <section className="eth-prehled">
       <div className="eth-prehled__header-row">
   <h2 className="eth-prehled__title">
-    Aktuální přehled na terminálech ETH
-  </h2>
+    Aktuální přehled na terminálech ETH v čase:</h2>
   {loadTime && (
-    <span className="eth-prehled__load-time">
-      Načteno: {loadTime}
+    <span className="eth-prehled__title"> {loadTime}
     </span>
   )}
 </div>
