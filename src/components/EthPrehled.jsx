@@ -3,7 +3,7 @@ import { zpracujPrehled, formatHms } from "../utils/dataProcessing";
 import { cinnostMap } from "../utils/cinnostMap";
 import "./EthPrehled.css";
 
-export default function EthPrehled({ data, loadTime }) {
+export default function EthPrehled({ data, loadTime, loadTimestamp }) {
   const [prehled, setPrehled] = useState([]);
   
   const [modalWorker, setModalWorker] = useState(null);
@@ -19,13 +19,27 @@ export default function EthPrehled({ data, loadTime }) {
   setPrehled(zpracovano);
 }, [data]);
 
-  const getDetailRows = (jmeno) =>
-    data
-      .filter((row) => row._pracovnikFullName === jmeno)
-      .filter((row) => row["Datum pořízení"] instanceof Date)
-      .sort(
-        (a, b) => a["Datum pořízení"].getTime() - b["Datum pořízení"].getTime(),
-      );
+  const getDetailRows = (jmeno) => {
+  const rows = data
+    .filter((row) => row._pracovnikFullName === jmeno)
+    .filter((row) => row["Datum pořízení"] instanceof Date)
+    .sort((a, b) => a["Datum pořízení"].getTime() - b["Datum pořízení"].getTime());
+
+  return rows.map((r, i) => {
+    let trvaniMs;
+    if (i === 0) {
+      // první řádek – trvání neznámé
+      trvaniMs = 0;
+    } else if (i === rows.length - 1) {
+      // poslední řádek – od záznamu do času načtení souboru
+      trvaniMs = (loadTimestamp ?? Date.now()) - r["Datum pořízení"].getTime();
+    } else {
+      // střední řádky – od předchozího záznamu k tomuto
+      trvaniMs = r["Datum pořízení"].getTime() - rows[i - 1]["Datum pořízení"].getTime();
+    }
+    return { ...r, trvaniMs };
+  });
+};
 
   return (
     <section className="eth-prehled">
@@ -103,50 +117,44 @@ export default function EthPrehled({ data, loadTime }) {
 
             <div className="eth-modal__table-wrap">
               <table className="eth-prehled__table">
-                <thead>
-                  <tr>
-                    <th>Čas pořízení</th>
-                    <th>Činnost</th>
-                    <th>Zakázka</th>
-                    <th>Zákazník</th>
-                    <th>Stav</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {getDetailRows(modalWorker).map((r, i) => {
-                    const kod = (
-                      String(r["Kód"] || "") +
-                      String(r["Kód prostoje/závady"] || "")
-                    ).trim();
-                    const cinnost = cinnostMap[kod] || kod;
-                    const cas = r["Datum pořízení"].toLocaleTimeString(
-                      "cs-CZ",
-                      {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit",
-                      },
-                    );
-                    return (
-                      <tr key={i}>
-                        <td className="eth-prehled__time">{cas}</td>
-                        <td>{cinnost}</td>
-                        <td>{r["Číslo zakázky"] || "---"}</td>
-                        <td>{r["Název"] || "---"}</td>
-                        <td
-                          className={
-                            r["Ukončeno"] === "A"
-                              ? "eth-prehled__cell--stav-a"
-                              : ""
-                          }
-                        >
-                          {r["Ukončeno"] || ""}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+  <thead>
+    <tr>
+      <th>Čas pořízení</th>
+      <th>Akce</th>
+      <th>Činnost</th>
+      <th>Zakázka</th>
+      <th>Zákazník</th>
+      <th>Trvání</th>
+    </tr>
+  </thead>
+  <tbody>
+    {getDetailRows(modalWorker).map((r, i) => {
+      const kod = (
+        String(r["Kód"] || "") +
+        String(r["Kód prostoje/závady"] || "")
+      ).trim();
+      const cinnost = cinnostMap[kod] || kod;
+      const cas = r["Datum pořízení"].toLocaleTimeString("cs-CZ", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      return (
+        <tr key={i}>
+          <td className="eth-prehled__time">{cas}</td>
+          <td>{r["Akce"] || ""}</td>
+          <td>{cinnost}</td>
+          <td>{r["Číslo zakázky"] || "---"}</td>
+          <td>{r["Název"] || "---"}</td>
+          <td className="eth-prehled__time">
+            {i === 0 ? "---" : formatHms(r.trvaniMs)}
+          </td>
+        </tr>
+      );
+    })}
+  </tbody>
+</table>
+                
             </div>
           </div>
         </div>

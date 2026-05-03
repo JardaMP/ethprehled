@@ -24,6 +24,15 @@ export default function ExcelLoader({ onDataLoaded }) {
         workbook.Sheets[workbook.SheetNames[0]],
         { defval: "" },
       );
+      const now = new Date();
+  const loadTime = now.toLocaleString("cs-CZ", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  setLoaded(true);
+  if (onDataLoaded) onDataLoaded(jsonData, loadTime, now.getTime()); // ← přidat now.getTime()
 
       const now = new Date();
       setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
