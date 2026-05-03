@@ -59,9 +59,10 @@ export function zpracujPrehled(rows) {
       prac,
       posledniAkce: r["Akce"] || "",
       posledniCinnost: d.posledniCinnost,
-      refTime: refDate.getTime(), // uložíme referenční čas pro live výpočet
+      refTime: refDate.getTime(),
       zakazka: r["Číslo zakázky"] || "PROSTOJ",
       zakaznik: r["Název"] || "PROSTOJ",
+      stav: r["Ukončeno"] || "", // ← PŘIDAT TENTO ŘÁDEK
     };
   });
 }

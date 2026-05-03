@@ -7,21 +7,24 @@ import "./App.css";
 
 function App() {
   const [excelData, setExcelData] = useState(null);
+  const [loadTime, setLoadTime] = useState(null);
 
-  const handleDataLoaded = (jsonData) => {
-    if (!jsonData) {
-      setExcelData(null);
-      return;
-    }
-    setExcelData(normalizeRows(jsonData));
-  };
+  const handleDataLoaded = (jsonData, time) => {     // ← přidat time
+  if (!jsonData) {
+    setExcelData(null);
+    setLoadTime(null);
+    return;
+  }
+  setExcelData(normalizeRows(jsonData));
+  setLoadTime(time);                               // ← přidat
+};
 
   return (
     <>
       <Header />
       <main>
         <ExcelLoader onDataLoaded={handleDataLoaded} />
-        {excelData && <EthPrehled data={excelData} />}
+        {excelData && <EthPrehled data={excelData} loadTime={loadTime} />}
       </main>
     </>
   );

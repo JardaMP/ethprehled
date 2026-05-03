@@ -3,7 +3,7 @@ import { zpracujPrehled, formatHms } from "../utils/dataProcessing";
 import { cinnostMap } from "../utils/cinnostMap";
 import "./EthPrehled.css";
 
-export default function EthPrehled({ data }) {
+export default function EthPrehled({ data, loadTime }) {
   const [prehled, setPrehled] = useState([]);
   const [tick, setTick] = useState(0);
   const [modalWorker, setModalWorker] = useState(null);
@@ -31,7 +31,16 @@ export default function EthPrehled({ data }) {
 
   return (
     <section className="eth-prehled">
-      <h2 className="eth-prehled__title">Aktuální přehled na terminálech ETH</h2>
+      <div className="eth-prehled__header-row">
+  <h2 className="eth-prehled__title">
+    Aktuální přehled na terminálech ETH
+  </h2>
+  {loadTime && (
+    <span className="eth-prehled__load-time">
+      Načteno: {loadTime}
+    </span>
+  )}
+</div>
 
       <div className="eth-prehled__table-wrap">
         <table className="eth-prehled__table">
@@ -55,30 +64,18 @@ export default function EthPrehled({ data }) {
 
               return (
                 <tr key={row.prac}>
-                  <td>
-                    <button
-                      className="eth-prehled__name-btn"
-                      onClick={() => setModalWorker(row.prac)}
-                    >
-                      {row.prac}
-                    </button>
-                  </td>
-                  <td className="eth-prehled__time">{formatHms(uplMs)}</td>
-                  <td>{row.posledniAkce}</td>
-                  <td
-                    className={isProstojZ ? "eth-prehled__cell--prostoj" : ""}
-                  >
-                    {row.posledniCinnost}
-                  </td>
-                  <td
-                    className={isProstojN ? "eth-prehled__cell--prostoj" : ""}
-                  >
-                    {row.zakaznik}
-                  </td>
-                  <td className={isStavA ? "eth-prehled__cell--stav-a" : ""}>
-                    {row.stav}
-                  </td>
-                </tr>
+  <td>
+    <button className="eth-prehled__name-btn" onClick={() => setModalWorker(row.prac)}>
+      {row.prac}
+    </button>
+  </td>
+  <td>{row.posledniAkce}</td>
+  <td>{row.posledniCinnost}</td>
+  <td className="eth-prehled__time">{formatHms(uplMs)}</td>
+  <td className={isProstojZ ? "eth-prehled__cell--prostoj" : ""}>{row.zakazka}</td>
+  <td className={isProstojN ? "eth-prehled__cell--prostoj" : ""}>{row.zakaznik}</td>
+  <td className={isStavA ? "eth-prehled__cell--stav-a" : ""}>{row.stav}</td>
+</tr>
               );
             })}
           </tbody>

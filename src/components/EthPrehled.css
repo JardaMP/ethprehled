@@ -7,10 +7,24 @@
 .eth-prehled__title {
   font-size: 1.25rem;
   font-weight: 600;
+  color: #1a1a1a;
+}
+
+.eth-prehled__header-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #0078d4;
-  color: #1a1a1a;
+}
+
+
+.eth-prehled__load-time {
+  font-size: 0.85rem;
+  color: #555;
+  white-space: nowrap;
 }
 
 .eth-prehled__table-wrap {
