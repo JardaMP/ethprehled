@@ -146,7 +146,7 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
           <td>{r["Číslo zakázky"] || "---"}</td>
           <td>{r["Název"] || "---"}</td>
           <td className="eth-prehled__time">
-            {i === 0 ? "---" : formatHms(r.trvaniMs)}
+            {r.trvaniMs === 0 ? "---" : formatHms(r.trvaniMs)}
           </td>
         </tr>
       );
