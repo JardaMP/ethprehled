@@ -5,7 +5,7 @@ import "./EthPrehled.css";
 
 export default function EthPrehled({ data, loadTime }) {
   const [prehled, setPrehled] = useState([]);
-  const [tick, setTick] = useState(0);
+  
   const [modalWorker, setModalWorker] = useState(null);
 
   // Zpracuj data při každém novém načtení souboru
@@ -15,11 +15,15 @@ export default function EthPrehled({ data, loadTime }) {
     setPrehled(zpracovano);
   }, [data]);
 
-  // Live aktualizace uplynulého času každou sekundu
   useEffect(() => {
-    const timer = setInterval(() => setTick((t) => t + 1), 1000);
-    return () => clearInterval(timer);
-  }, []);
+    const now = new Date.now();
+    const zpracovano = zpracujPrehled(data).map((row) => ({
+      ...row,
+      ulpMs: now - row.refTime,
+      }));
+    zpracovano.sort((a, b) => a.ulpMs - b.ulpMs); // nejdříve aktualizované nahoře
+    setPrehled(zpracovano);
+  }, [data]);
 
   const getDetailRows = (jmeno) =>
     data
@@ -57,7 +61,7 @@ export default function EthPrehled({ data, loadTime }) {
           </thead>
           <tbody>
             {prehled.map((row) => {
-              const uplMs = Date.now() - row.refTime;
+              const { uplMs }  = row;
               const isProstojZ = row.zakazka === "PROSTOJ";
               const isProstojN = row.zakaznik === "PROSTOJ";
               const isStavA = row.stav === "A";
