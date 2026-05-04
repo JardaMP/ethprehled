@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import ExcelLoader from "./components/ExcelLoader";
 import EthPrehled from "./components/EthPrehled";
 import { normalizeRows } from "./utils/dataProcessing";
+import Navod from "./components/Navod";
 import "./App.css";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
     <>
       <Header />
       <main>
+        <Navod />
         <ExcelLoader onDataLoaded={handleDataLoaded} />
         {excelData && <EthPrehled data={excelData} loadTime={loadTime} loadTimestamp={loadTimestamp} />}
       </main>

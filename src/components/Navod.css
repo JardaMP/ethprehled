@@ -1,0 +1,154 @@
+/* ── Trigger tlačítko ── */
+.navod__btn-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  background: #fff;
+  color: #0078d4;
+  border: 1.5px solid #0078d4;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.navod__btn-trigger:hover { background: #0078d4; color: #fff; }
+.navod__btn-trigger svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ── Overlay ── */
+.navod__overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+/* ── Modal ── */
+.navod__modal {
+  background: #fff;
+  width: 100%;
+  max-width: 860px;
+  max-height: 90vh;
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Hlavička ── */
+.navod__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.1rem 1.5rem;
+  border-bottom: 2px solid #0078d4;
+  flex-shrink: 0;
+}
+.navod__title { font-size: 1.15rem; font-weight: 700; color: #1a1a1a; margin: 0; }
+.navod__close { font-size: 1.75rem; font-weight: bold; background: none; border: none; cursor: pointer; color: #555; line-height: 1; }
+.navod__close:hover { color: #000; }
+
+/* ── Záložky ── */
+.navod__tabs {
+  display: flex;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.navod__tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.1rem;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #555;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.navod__tab:hover { color: #0078d4; }
+.navod__tab--aktivni { color: #0078d4; font-weight: 600; border-bottom-color: #0078d4; background: #fff; }
+.navod__tab-cislo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #ddd;
+  color: #444;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.navod__tab--aktivni .navod__tab-cislo { background: #0078d4; color: #fff; }
+
+/* ── Obsah kroku ── */
+.navod__obsah {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+@media (min-width: 600px) {
+  .navod__obsah { flex-direction: row; align-items: flex-start; }
+}
+
+/* ── Obrázek ── */
+.navod__obrazek-wrap { flex-shrink: 0; width: 100%; }
+@media (min-width: 600px) { .navod__obrazek-wrap { width: 55%; } }
+.navod__obrazek { width: 100%; height: auto; border-radius: 6px; border: 1px solid #ddd; display: block; }
+.navod__obrazek-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #f0f4f8;
+  border: 2px dashed #bcd;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #9ab;
+  font-size: 0.85rem;
+}
+.navod__obrazek-placeholder svg { width: 40px; height: 40px; opacity: 0.5; }
+
+/* ── Popis ── */
+.navod__popis-wrap { flex: 1; }
+.navod__krok-nadpis { font-size: 1rem; font-weight: 700; color: #1a1a1a; margin: 0 0 0.75rem 0; }
+.navod__krok-popis { font-size: 0.9rem; line-height: 1.65; color: #444; margin: 0; }
+
+/* ── Navigace ── */
+.navod__navigace {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.5rem;
+  border-top: 1px solid #eee;
+  flex-shrink: 0;
+}
+.navod__nav-btn {
+  padding: 0.4rem 1rem;
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.navod__nav-btn:hover:not(:disabled) { background: #005a9e; }
+.navod__nav-btn:disabled { background: #ccc; cursor: not-allowed; }
+.navod__krok-info { font-size: 0.85rem; color: #888; }
