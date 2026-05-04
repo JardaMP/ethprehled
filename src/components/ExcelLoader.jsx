@@ -18,25 +18,49 @@ export default function ExcelLoader({ onDataLoaded }) {
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array", cellDates: true });
-      const jsonData = XLSX.utils.sheet_to_json(
-        workbook.Sheets[workbook.SheetNames[0]],
-        { defval: "" },
-      );
+  const data = new Uint8Array(e.target.result);
+  const workbook = XLSX.read(data, { type: "array", cellDates: true });
+  const jsonData = XLSX.utils.sheet_to_json(
+    workbook.Sheets[workbook.SheetNames[0]],
+    { defval: "" },
+  );
 
-      const now = new Date();
-      const formattedTime = now.toLocaleString("cs-CZ", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
+  // ── Validace povinných sloupců ──
+  const REQUIRED_COLUMNS = [
+    "Datum pořízení",
+    "Jméno",
+    "Příjmení",
+    "Akce",
+    "Kód",
+    "Kód prostoje/závady",
+    "Název",
+    "Celkový čas [min]",
+    "Ukončeno",
+  ];
 
-      setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
-      setLoadTime(formattedTime);
+  const headers = jsonData.length > 0 ? Object.keys(jsonData[0]) : [];
+  const missing = REQUIRED_COLUMNS.filter((col) => !headers.includes(col));
 
-      if (onDataLoaded) onDataLoaded(jsonData, formattedTime, now.getTime());
-    };
+  if (missing.length > 0) {
+    alert(
+      `Soubor neobsahuje požadované sloupce:\n\n• ${missing.join("\n• ")}\n\nZkontrolujte prosím správnost exportu.`
+    );
+    return; // soubor se nenačte, stav se nezmění
+  }
+
+  // ── Načtení proběhlo v pořádku ──
+  const now = new Date();
+  const formattedTime = now.toLocaleString("cs-CZ", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
+  setLoadTime(formattedTime);
+
+  if (onDataLoaded) onDataLoaded(jsonData, formattedTime, now.getTime());
+};
     reader.readAsArrayBuffer(file);
   };
 
