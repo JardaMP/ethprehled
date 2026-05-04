@@ -55,7 +55,7 @@ export default function ExcelLoader({ onDataLoaded }) {
 
       if (missing.length > 0) {
         alert(
-          `Soubor neobsahuje požadované sloupce:\n\n• ${missing.join("\n• ")}\n\nZkontrolujte prosím sloupce v excelu.`
+          `Soubor neobsahuje požadované sloupce:\n\n• ${missing.join("\n• ")}\n\nZkontrolujte prosím sloupce v Excelu.`
         );
         return; // soubor se nenačte, stav se nezmění
       }

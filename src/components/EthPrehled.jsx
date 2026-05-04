@@ -10,58 +10,57 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
 
   // Zpracuj data při každém novém načtení souboru
   useEffect(() => {
-  const now = Date.now();
-  const zpracovano = zpracujPrehled(data).map((row) => ({
-    ...row,
-    uplMs: now - row.refTime,
-  }));
-  zpracovano.sort((a, b) => a.refTime - b.refTime); // nejstarší aktivita nahoře
-  setPrehled(zpracovano);
-}, [data]);
+    const now = Date.now();
+    const zpracovano = zpracujPrehled(data).map((row) => ({
+      ...row,
+      uplMs: now - row.refTime,
+    }));
+    zpracovano.sort((a, b) => a.refTime - b.refTime);
+    setPrehled(zpracovano);
+  }, [data]);
 
   const getDetailRows = (jmeno) => {
-  const rows = data
-    .filter((row) => row._pracovnikFullName === jmeno)
-    .filter((row) => row["Datum pořízení"] instanceof Date)
-    .sort((a, b) => a["Datum pořízení"].getTime() - b["Datum pořízení"].getTime());
-  
-    const filtrovanyPrehled = zobrazUkoncene
-  ? prehled.filter((row) => row.stav === "A")
-  : prehled;
+    const rows = data
+      .filter((row) => row._pracovnikFullName === jmeno)
+      .filter((row) => row["Datum pořízení"] instanceof Date)
+      .sort((a, b) => a["Datum pořízení"].getTime() - b["Datum pořízení"].getTime());
 
-  return rows.map((r, i) => {
-    let trvaniMs;
-    if (i === 0 && rows.length === 1) {
-      trvaniMs = (loadTimestamp ?? Date.now()) - r["Datum pořízení"].getTime();
-    } else if (i === 0) {
-      // první řádek – trvání neznámé
-      trvaniMs = 0; 
-    } else if (i === rows.length - 1) {
-      trvaniMs = (loadTimestamp ?? Date.now()) - r["Datum pořízení"].getTime();
+    return rows.map((r, i) => {
+      let trvaniMs;
+      if (i === 0 && rows.length === 1) {
+        trvaniMs = (loadTimestamp ?? Date.now()) - r["Datum pořízení"].getTime();
+      } else if (i === 0) {
+        trvaniMs = 0;
+      } else if (i === rows.length - 1) {
+        trvaniMs = (loadTimestamp ?? Date.now()) - r["Datum pořízení"].getTime();
       } else {
-      // střední řádky – od předchozího záznamu k tomuto
-      trvaniMs = r["Datum pořízení"].getTime() - rows[i - 1]["Datum pořízení"].getTime();
-    }
-    return { ...r, trvaniMs };
-  });
-};
+        trvaniMs = r["Datum pořízení"].getTime() - rows[i - 1]["Datum pořízení"].getTime();
+      }
+      return { ...r, trvaniMs };
+    });
+  };
+
+  // ── Filtrace ──
+  const filtrovanyPrehled = zobrazUkoncene
+    ? prehled.filter((row) => String(row.stav).trim().toUpperCase() === "A")
+    : prehled;
 
   return (
     <section className="eth-prehled">
       <div className="eth-prehled__header-row">
-  <h2 className="eth-prehled__title">
-    Aktuální přehled na terminálech ETH v čase:
-  </h2>
-  {loadTime && (
-    <span className="eth-prehled__title"> {loadTime}</span>
-  )}
-  <button
-    className={`eth-prehled__filter-btn ${zobrazUkoncene ? "eth-prehled__filter-btn--active" : ""}`}
-    onClick={() => setZobrazUkoncene((prev) => !prev)}
-  >
-    {zobrazUkoncene ? "✓ Ukončení operace" : "Ukončení operace"}
-  </button>
-</div>
+        <h2 className="eth-prehled__title">
+          Aktuální přehled na terminálech ETH v čase:
+        </h2>
+        {loadTime && (
+          <span className="eth-prehled__title"> {loadTime}</span>
+        )}
+        <button
+          className={`eth-prehled__filter-btn ${zobrazUkoncene ? "eth-prehled__filter-btn--active" : ""}`}
+          onClick={() => setZobrazUkoncene((prev) => !prev)}
+        >
+          {zobrazUkoncene ? "✓ Ukončení operace" : "Ukončení operace"}
+        </button>
+      </div>
 
       <div className="eth-prehled__table-wrap">
         <table className="eth-prehled__table">
@@ -77,26 +76,29 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
             </tr>
           </thead>
           <tbody>
-            {prehled.map((row) => {
-              const { uplMs }  = row;
+            {filtrovanyPrehled.map((row) => {
+              const { uplMs } = row;
               const isProstojZ = row.zakazka === "PROSTOJ";
               const isProstojN = row.zakaznik === "PROSTOJ";
-              const isStavA = row.stav === "A";
+              const isStavA = String(row.stav).trim().toUpperCase() === "A";
 
               return (
                 <tr key={row.prac}>
-  <td>
-    <button className="eth-prehled__name-btn" onClick={() => setModalWorker(row.prac)}>
-      {row.prac}
-    </button>
-  </td>
-  <td>{row.posledniAkce}</td>
-  <td>{row.posledniCinnost}</td>
-  <td className="eth-prehled__time">{formatHms(uplMs)}</td>
-  <td className={isProstojZ ? "eth-prehled__cell--prostoj" : ""}>{row.zakazka}</td>
-  <td className={isProstojN ? "eth-prehled__cell--prostoj" : ""}>{row.zakaznik}</td>
-  <td className={isStavA ? "eth-prehled__cell--stav-a" : ""}>{row.stav}</td>
-</tr>
+                  <td>
+                    <button
+                      className="eth-prehled__name-btn"
+                      onClick={() => setModalWorker(row.prac)}
+                    >
+                      {row.prac}
+                    </button>
+                  </td>
+                  <td>{row.posledniAkce}</td>
+                  <td>{row.posledniCinnost}</td>
+                  <td className="eth-prehled__time">{formatHms(uplMs)}</td>
+                  <td className={isProstojZ ? "eth-prehled__cell--prostoj" : ""}>{row.zakazka}</td>
+                  <td className={isProstojN ? "eth-prehled__cell--prostoj" : ""}>{row.zakaznik}</td>
+                  <td className={isStavA ? "eth-prehled__cell--stav-a" : ""}>{row.stav}</td>
+                </tr>
               );
             })}
           </tbody>
@@ -126,44 +128,43 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
 
             <div className="eth-modal__table-wrap">
               <table className="eth-prehled__table">
-  <thead>
-    <tr>
-      <th>Čas pořízení</th>
-      <th>Akce</th>
-      <th>Činnost</th>
-      <th>Zakázka</th>
-      <th>Zákazník</th>
-      <th>Trvání</th>
-    </tr>
-  </thead>
-  <tbody>
-    {getDetailRows(modalWorker).map((r, i) => {
-      const kod = (
-        String(r["Kód"] || "") +
-        String(r["Kód prostoje/závady"] || "")
-      ).trim();
-      const cinnost = cinnostMap[kod] || kod;
-      const cas = r["Datum pořízení"].toLocaleTimeString("cs-CZ", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-      return (
-        <tr key={i}>
-          <td className="eth-prehled__time">{cas}</td>
-          <td>{r["Akce"] || ""}</td>
-          <td>{cinnost}</td>
-          <td>{r["Číslo zakázky"] || "---"}</td>
-          <td>{r["Název"] || "---"}</td>
-          <td className="eth-prehled__time">
-            {r.trvaniMs === 0 ? "---" : formatHms(r.trvaniMs)}
-          </td>
-        </tr>
-      );
-    })}
-  </tbody>
-</table>
-                
+                <thead>
+                  <tr>
+                    <th>Čas pořízení</th>
+                    <th>Akce</th>
+                    <th>Činnost</th>
+                    <th>Zakázka</th>
+                    <th>Zákazník</th>
+                    <th>Trvání</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getDetailRows(modalWorker).map((r, i) => {
+                    const kod = (
+                      String(r["Kód"] || "") +
+                      String(r["Kód prostoje/závady"] || "")
+                    ).trim();
+                    const cinnost = cinnostMap[kod] || kod;
+                    const cas = r["Datum pořízení"].toLocaleTimeString("cs-CZ", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    });
+                    return (
+                      <tr key={i}>
+                        <td className="eth-prehled__time">{cas}</td>
+                        <td>{r["Akce"] || ""}</td>
+                        <td>{cinnost}</td>
+                        <td>{r["Číslo zakázky"] || "---"}</td>
+                        <td>{r["Název"] || "---"}</td>
+                        <td className="eth-prehled__time">
+                          {r.trvaniMs === 0 ? "---" : formatHms(r.trvaniMs)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
