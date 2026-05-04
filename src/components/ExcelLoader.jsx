@@ -2,6 +2,18 @@ import { useState, useRef } from "react";
 import * as XLSX from "xlsx";
 import "./ExcelLoader.css";
 
+const REQUIRED_COLUMNS = [
+  "Datum pořízení",
+  "Jméno",
+  "Příjmení",
+  "Akce",
+  "Kód",
+  "Kód prostoje/závady",
+  "Název",
+  "Celkový čas [min]",
+  "Ukončeno",
+];
+
 export default function ExcelLoader({ onDataLoaded }) {
   const [loadedFile, setLoadedFile] = useState(null);
   const [loadTime, setLoadTime] = useState(null);
@@ -17,51 +29,51 @@ export default function ExcelLoader({ onDataLoaded }) {
     }
 
     const reader = new FileReader();
+
     reader.onload = (e) => {
-  const data = new Uint8Array(e.target.result);
-  const workbook = XLSX.read(data, { type: "array", cellDates: true });
-  const jsonData = XLSX.utils.sheet_to_json(
-    workbook.Sheets[workbook.SheetNames[0]],
-    { defval: "" },
-  );
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: "array", cellDates: true });
+      const jsonData = XLSX.utils.sheet_to_json(
+        workbook.Sheets[workbook.SheetNames[0]],
+        { defval: "" },
+      );
 
-  // ── Validace povinných sloupců ──
-  const REQUIRED_COLUMNS = [
-    "Datum pořízení",
-    "Jméno",
-    "Příjmení",
-    "Akce",
-    "Kód",
-    "Kód prostoje/závady",
-    "Název",
-    "Celkový čas [min]",
-    "Ukončeno",
-  ];
+       console.log("Nalezené hlavičky:", Object.keys(jsonData[0] || {}));
 
-  const headers = jsonData.length > 0 ? Object.keys(jsonData[0]) : [];
-  const missing = REQUIRED_COLUMNS.filter((col) => !headers.includes(col));
+      // ── Ochrana před prázdným souborem ──
+      if (jsonData.length === 0) {
+        alert("Soubor neobsahuje žádná data.");
+        return;
+      }
 
-  if (missing.length > 0) {
-    alert(
-      `Soubor neobsahuje požadované sloupce:\n\n• ${missing.join("\n• ")}\n\nZkontrolujte prosím správnost exportu.`
-    );
-    return; // soubor se nenačte, stav se nezmění
-  }
+      // ── Validace povinných sloupců (trim() odstraní mezery a BOM znaky) ──
+      const headers = Object.keys(jsonData[0]).map((h) =>
+        h.replace(/^\uFEFF/, "").trim()
+      );
+      const missing = REQUIRED_COLUMNS.filter((col) => !headers.includes(col));
 
-  // ── Načtení proběhlo v pořádku ──
-  const now = new Date();
-  const formattedTime = now.toLocaleString("cs-CZ", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
+      if (missing.length > 0) {
+        alert(
+          `Soubor neobsahuje požadované sloupce:\n\n• ${missing.join("\n• ")}\n\nZkontrolujte prosím správnost exportu.`
+        );
+        return; // soubor se nenačte, stav se nezmění
+      }
 
-  setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
-  setLoadTime(formattedTime);
+      // ── Načtení proběhlo v pořádku ──
+      const now = new Date();
+      const formattedTime = now.toLocaleString("cs-CZ", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
 
-  if (onDataLoaded) onDataLoaded(jsonData, formattedTime, now.getTime());
-};
-    reader.readAsArrayBuffer(file);
+      setLoadedFile({ name: file.name, size: (file.size / 1024).toFixed(1) });
+      setLoadTime(formattedTime);
+
+      if (onDataLoaded) onDataLoaded(jsonData, formattedTime, now.getTime());
+    };
+
+    reader.readAsArrayBuffer(file); // ← musí být ZDE, mimo onload
   };
 
   const handleFileChange = (e) => {
@@ -122,7 +134,6 @@ export default function ExcelLoader({ onDataLoaded }) {
           tabIndex={-1}
         />
       </div>
-
     </section>
   );
 }
