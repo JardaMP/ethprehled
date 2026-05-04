@@ -144,3 +144,26 @@
 .eth-modal__table-wrap {
   overflow-x: auto;
 }
+
+.eth-prehled__filter-btn {
+  margin-left: auto;
+  padding: 6px 14px;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.eth-prehled__filter-btn:hover {
+  background: #e8e8e8;
+  border-color: #888;
+}
+
+.eth-prehled__filter-btn--active {
+  background: #d4edda;
+  border-color: #5a9e6f;
+  color: #1a6b35;
+  font-weight: 600;
+}

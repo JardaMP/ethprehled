@@ -5,7 +5,7 @@ import "./EthPrehled.css";
 
 export default function EthPrehled({ data, loadTime, loadTimestamp }) {
   const [prehled, setPrehled] = useState([]);
-  
+  const [zobrazUkoncene, setZobrazUkoncene] = useState(false);
   const [modalWorker, setModalWorker] = useState(null);
 
   // Zpracuj data při každém novém načtení souboru
@@ -24,6 +24,10 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
     .filter((row) => row._pracovnikFullName === jmeno)
     .filter((row) => row["Datum pořízení"] instanceof Date)
     .sort((a, b) => a["Datum pořízení"].getTime() - b["Datum pořízení"].getTime());
+  
+    const filtrovanyPrehled = zobrazUkoncene
+  ? prehled.filter((row) => row.stav === "A")
+  : prehled;
 
   return rows.map((r, i) => {
     let trvaniMs;
@@ -46,11 +50,17 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
     <section className="eth-prehled">
       <div className="eth-prehled__header-row">
   <h2 className="eth-prehled__title">
-    Aktuální přehled na terminálech ETH v čase:</h2>
+    Aktuální přehled na terminálech ETH v čase:
+  </h2>
   {loadTime && (
-    <span className="eth-prehled__title"> {loadTime}
-    </span>
+    <span className="eth-prehled__title"> {loadTime}</span>
   )}
+  <button
+    className={`eth-prehled__filter-btn ${zobrazUkoncene ? "eth-prehled__filter-btn--active" : ""}`}
+    onClick={() => setZobrazUkoncene((prev) => !prev)}
+  >
+    {zobrazUkoncene ? "✓ Ukončení operace" : "Ukončení operace"}
+  </button>
 </div>
 
       <div className="eth-prehled__table-wrap">

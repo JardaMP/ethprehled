@@ -9,6 +9,7 @@ const REQUIRED_COLUMNS = [
   "Akce",
   "Kód",
   "Kód prostoje/závady",
+  "Číslo zakázky",
   "Název",
   "Celkový čas [min]",
   "Ukončeno",
@@ -54,7 +55,7 @@ export default function ExcelLoader({ onDataLoaded }) {
 
       if (missing.length > 0) {
         alert(
-          `Soubor neobsahuje požadované sloupce:\n\n• ${missing.join("\n• ")}\n\nZkontrolujte prosím správnost exportu.`
+          `Soubor neobsahuje požadované sloupce:\n\n• ${missing.join("\n• ")}\n\nZkontrolujte prosím sloupce v excelu.`
         );
         return; // soubor se nenačte, stav se nezmění
       }
