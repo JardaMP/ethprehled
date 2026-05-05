@@ -40,6 +40,7 @@ export default function ExcelLoader({ onDataLoaded }) {
       );
 
        console.log("Nalezené hlavičky:", Object.keys(jsonData[0] || {}));
+       console.log(jsonData);
 
       // ── Ochrana před prázdným souborem ──
       if (jsonData.length === 0) {

@@ -17,6 +17,21 @@ export default function EthPrehled({ data, loadTime, loadTimestamp }) {
     }));
     zpracovano.sort((a, b) => a.refTime - b.refTime);
     setPrehled(zpracovano);
+  
+  
+  // ── Diagnostika – výpis do konzole ──
+    console.log("=== ETH Přehled – načtená data ===");
+    console.log(`Počet pracovníků: ${zpracovano.length}`);
+    console.table(
+      zpracovano.map((r) => ({
+        Pracovník: r.prac,
+        "Poslední akce": r.posledniAkce,
+        "Poslední činnost": r.posledniCinnost,
+        Zakázka: r.zakazka,
+        Zákazník: r.zakaznik,
+        Stav: r.stav,
+      }))
+    );
   }, [data]);
 
   const getDetailRows = (jmeno) => {
